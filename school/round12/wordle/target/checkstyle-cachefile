@@ -1,0 +1,4 @@
+#Tue Apr 04 12:30:07 EEST 2023
+configuration*?=812CAA2C1B95F08BB22B08F20A1B8EAFA8B5C9F0
+module-resource*?\:checkstyle-suppressions.xml=4C77666B7487A191CFA2161D4358FCF84BED53AD
+module-resource*?\:checkstyle-xpath-suppressions.xml=D4A4CC4E8F8E38742312243EAA77897E7813737B

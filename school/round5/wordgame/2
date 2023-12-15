@@ -1,0 +1,175 @@
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class WordGame {
+    private ArrayList<String> words = new ArrayList<>();
+    private WordGameState currentState;
+    private String correctWord;
+
+    public WordGame(String wordFilename) {
+        BufferedReader reader;
+
+        try {
+            reader = new BufferedReader(new FileReader(wordFilename));
+            String line = reader.readLine();
+
+            while (line != null) {
+                this.words.add(line.toLowerCase());
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void initGame(int wordIndex, int mistakeLimit) {
+       this.correctWord = words.get(wordIndex % (this.words.size()));
+       currentState = new WordGameState(
+               "_".repeat(this.correctWord.length()), 
+               0, 
+               mistakeLimit, 
+               this.correctWord.length()
+        );
+
+    }
+
+    public boolean isGameActive() {
+        if (this.currentState == null || this.currentState.getActive() == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public WordGameState getGameState() throws
+        GameStateException {
+        if (isGameActive()) {
+            return this.currentState;
+        } else {
+            throw new GameStateException("There is currently no active word game!");
+        }
+    }
+
+    public WordGameState guess(char c) {
+        try {
+            WordGameState newState = getGameState().handleGuess(c, this.correctWord);
+            if (newState.getMistakes() > newState.getMistakeLimit() || newState.getMissingChars() == 0) {
+                this.currentState.setActive(false);
+                return this.currentState; 
+            }
+
+            return this.currentState;
+        } catch(GameStateException e) {
+            return null;
+        }
+    }
+
+    public WordGameState guess(String word) throws
+        GameStateException {
+        if ( this.currentState == null || this.currentState.getActive() == false) {
+            throw new GameStateException("There is currently no active word game!");
+        } else {
+            if ( word.equals(this.correctWord)) {
+                this.currentState.setWon(this.correctWord);
+            } else {
+                this.currentState.addMistake();
+                if (this.currentState.getMistakes() > this.currentState.getMistakeLimit()) {
+                    this.currentState.setWord(correctWord);
+                    this.currentState.setActive(false);
+                    
+                    return this.currentState;
+                }
+            }
+            return this.currentState;
+        }
+    }
+
+    public static class WordGameState {
+        private String word;
+        private int mistakes;
+        private int mistakeLimit;
+        private int missingChars;
+        private boolean active;
+        
+        private WordGameState(
+                String word,
+                int mistakes,
+                int mistakeLimit,
+                int missingChars ) {
+            
+            this.word = word;
+            this.mistakes = mistakes;
+            this.mistakeLimit = mistakeLimit;
+            this.missingChars = missingChars;
+            this.active = true;
+        }
+
+        public String getWord() {
+         return this.word;
+        }
+
+        public int getMistakes() {
+            return this.mistakes;
+        }
+
+        public int getMistakeLimit() {
+            return this.mistakeLimit;
+        }
+
+        public int getMissingChars() {
+            return this.missingChars;
+        }
+
+        public boolean getActive() {
+            return this.active;
+        }
+
+        public void setActive(boolean state) {
+            this.active = state;
+        }
+
+        public void addMistake() {
+            this.mistakes += 1;
+        }
+
+        public void setWon(String corrWord) {
+            this.missingChars = 0;
+            setWord(corrWord); 
+        }
+
+        public void setWord(String word) {
+            this.word = word;
+        }
+
+        public WordGameState handleGuess(char c, String corrWord) {
+            c = Character.toLowerCase(c);
+            
+            if (this.word.indexOf(c) == -1) {
+                int indx = corrWord.indexOf(c);
+                if (indx == -1) {
+                    this.mistakes += 1;
+                } else {
+                    while (indx >= 0) {
+                        this.missingChars -= 1;
+                    
+                        String start = this.word.substring(0,indx);
+                        String end = this.word.substring(indx+1,this.word.length());
+                        String newWord = start + c + end;
+                        this.word = newWord;
+
+                        indx = corrWord.indexOf(c,indx+1);
+                    }
+                }
+            } else {
+                this.mistakes += 1;
+            }
+
+            return this;
+        }
+    }
+}
+

@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.tuni.prog3</groupId>
+  <artifactId>wordle</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>wordle</name>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId> ----- </groupId>
+					<artifactId>javafx-maven-plugin</artifactId>
+					<version>0.0.1</version>
+					<configuration>
+						<mainClass>Wordle</mainClass>
+					</configuration>
+				</plugin>
+				<plugin>
+				   <groupId>org.apache.maven.plugins</groupId>
+				   <artifactId>maven-checkstyle-plugin</artifactId>
+				   <version>3.2.1</version>
+				   <configuration>
+					 <configLocation>google_checks.xml</configLocation>
+					 <encoding>UTF-8</encoding>
+					 <consoleOutput>true</consoleOutput>
+					 <failsOnError>true</failsOnError>
+					 <linkXRef>false</linkXRef>
+				   </configuration>
+				   <executions>
+					 <execution>
+					   <id>validate</id>
+					   <phase>validate</phase>
+					   <goals>
+						 <goal>check</goal>
+					   </goals>
+					 </execution>
+					</executions>
+    		</plugin>
+			</plugins>
+		</pluginManagement>
+</build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+  	</dependency>
+	<dependency>
+	  <groupId>org.openjfx</groupId>
+	  <artifactId>javafx-controls</artifactId>
+	  <version>11</version>
+  </dependency>
+      <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-checkstyle-plugin</artifactId>
+      <version>3.2.1</version>
+      <type>maven-plugin</type>
+    </dependency>
+	</dependencies>
+	<properties>
+    	<maven.compiler.source>11</maven.compiler.source>
+    	<maven.compiler.target>11</maven.compiler.target>
+	</properties>
+</project>
